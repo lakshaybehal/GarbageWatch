@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{ spot.place_name }}</h2>
+
+<p><b>Status:</b> {{ spot.status }}</p>
+<p><b>Description:</b> {{ spot.description }}</p>
+<p><b>Phone:</b> {{ spot.phone }}</p>
+
+{% if spot.image %}
+<hr>
+<h3>Spot Image:</h3>
+<img src="/static/uploads/{{ spot.image }}" width="450">
+{% endif %}
+
+<a href="/map">⬅ Back to Map</a>
+
+{% endblock %}
+{% if spot.status == "cleaned" %}
+  <span class="badge badge-cleaned">Cleaned</span>
+{% elif spot.status == "ongoing" %}
+  <span class="badge badge-ongoing">Ongoing</span>
+{% else %}
+  <span class="badge badge-not">Not Cleaned</span>
+{% endif %}
+

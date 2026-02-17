@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Approved Garbage Spots</h2>
+
+<a href="/admin/dashboard">⬅ Pending Reports</a> |
+<a href="/admin/logout">Logout</a>
+
+<hr>
+
+{% if spots|length == 0 %}
+  <p>No approved spots yet ✅</p>
+{% else %}
+
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Place</th>
+    <th>Current Status</th>
+    <th>Update Status</th>
+  </tr>
+
+  {% for spot in spots %}
+  <tr>
+    <td>{{ spot.place_name }}</td>
+
+    <td><b>{{ spot.status }}</b></td>
+
+    <td>
+      <form method="POST" action="/admin/update_status/{{ spot.id }}">
+
+        <select name="status">
+          <option value="cleaned">Cleaned ✅</option>
+          <option value="ongoing">Ongoing 🟠</option>
+          <option value="not_cleaned">Not Cleaned ❌</option>
+        </select>
+
+        <button type="submit">Update</button>
+
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endif %}
+
+{% endblock %}

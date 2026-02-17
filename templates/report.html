@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Report Garbage Spot</h2>
+
+<form method="POST" enctype="multipart/form-data">
+
+  <label>Place Name:</label><br>
+  <input type="text" name="place_name" required><br><br>
+
+  <label>Description:</label><br>
+  <textarea name="description" required></textarea><br><br>
+
+  <label>Latitude:</label><br>
+  <input type="number" step="any" name="latitude" required><br><br>
+
+  <label>Longitude:</label><br>
+  <input type="number" step="any" name="longitude" required><br><br>
+
+  <label>Mobile Number:</label><br>
+  <input type="text" name="phone"
+         pattern="[0-9]{10}" maxlength="10"
+         required><br><br>
+
+  <label>Status:</label><br>
+  <input type="radio" name="status" value="cleaned" required> Cleaned ✅<br>
+  <input type="radio" name="status" value="ongoing"> Ongoing 🟠<br>
+  <input type="radio" name="status" value="not_cleaned"> Not Cleaned ❌<br><br>
+
+  <label>Upload Spot Image:</label><br>
+  <input type="file" name="image"><br><br>
+
+  <button type="submit">Submit Report</button>
+
+</form>
+
+{% endblock %}

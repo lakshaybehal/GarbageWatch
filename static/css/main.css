@@ -1,0 +1,51 @@
+/* Smooth animations */
+* {
+  transition: all 0.3s ease-in-out;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Navbar hover */
+.nav-link:hover {
+  color: #caffbf !important;
+  transform: translateY(-2px);
+}
+
+/* Card animation */
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+/* Button animation */
+.btn {
+  border-radius: 30px;
+}
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* Section animation */
+.fade-in {
+  animation: fadeIn 1.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Footer */
+.footer {
+  background: #198754;
+  color: white;
+  padding: 20px 0;
+}

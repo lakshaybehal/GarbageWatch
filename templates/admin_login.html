@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Admin Login</h2>
+
+<p><b>Authorized Admins:</b> Vabek, Lakshay</p>
+
+<hr>
+
+{% if error %}
+<p style="color:red;"><b>{{ error }}</b></p>
+{% endif %}
+
+<form method="POST">
+
+  <label>Username:</label><br>
+  <input type="text" name="username" required><br><br>
+
+  <label>Password:</label><br>
+  <input type="password" name="password" required><br><br>
+
+  <button type="submit">Login</button>
+
+</form>
+
+{% endblock %}

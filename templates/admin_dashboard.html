@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Admin Dashboard (Pending Reports)</h2>
+
+<p>Admin: <b>{{ session["admin_user"] }}</b></p>
+
+<a href="/admin/approved">✅ View Approved Spots</a> |
+<a href="/admin/logout">Logout</a>
+
+<hr>
+
+{% if spots|length == 0 %}
+  <p>No pending reports ✅</p>
+{% else %}
+
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Place</th>
+    <th>Status</th>
+    <th>Approve</th>
+    <th>Reject</th>
+  </tr>
+
+  {% for spot in spots %}
+  <tr>
+    <td>{{ spot.place_name }}</td>
+    <td>{{ spot.status }}</td>
+
+    <td>
+      <a href="/admin/approve/{{ spot.id }}">Approve ✅</a>
+    </td>
+
+    <td>
+      <a href="/admin/reject/{{ spot.id }}" style="color:red;">
+        Reject ❌
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endif %}
+
+{% endblock %}

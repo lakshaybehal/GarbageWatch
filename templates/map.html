@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>GarbageWatch Map (Approved Spots)</h2>
+
+<div id="map" style="height: 500px;"></div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // ✅ Create Map
+    var map = L.map("map").setView([31.3260, 75.5762], 13);
+
+    // ✅ Load Tiles
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors"
+    }).addTo(map);
+
+    // ✅ Icons
+    var greenIcon = new L.Icon({
+        iconUrl: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+        iconSize: [32, 32]
+    });
+
+    var orangeIcon = new L.Icon({
+        iconUrl: "https://maps.google.com/mapfiles/ms/icons/orange-dot.png",
+        iconSize: [32, 32]
+    });
+
+    var redIcon = new L.Icon({
+        iconUrl: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+        iconSize: [32, 32]
+    });
+
+    // ✅ Add Approved Spots Directly (No JS Array Errors)
+    {% for spot in spots %}
+
+        var iconUsed = redIcon;
+
+        {% if spot.status == "cleaned" %}
+            iconUsed = greenIcon;
+        {% elif spot.status == "ongoing" %}
+            iconUsed = orangeIcon;
+        {% endif %}
+
+        L.marker([{{ spot.latitude }}, {{ spot.longitude }}], {icon: iconUsed})
+            .addTo(map)
+            .bindPopup(
+                "<b>{{ spot.place_name }}</b><br>" +
+                "Status: {{ spot.status }}<br><br>" +
+                "<a href='/spot/{{ spot.id }}'>View Details</a>"
+            );
+
+    {% endfor %}
+</script>
+
+{% endblock %}
