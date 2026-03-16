@@ -1,9 +1,42 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>About GarbageWatch</h2>
-<p>
-GarbageWatch is designed to identify and monitor garbage spots
-to improve cleanliness in urban areas.
-</p>
+
+<div class="container fade-in">
+
+  <h1 class="fw-bold text-center mb-4">About GarbageWatch</h1>
+
+  <p class="text-center">
+    GarbageWatch is a civic action platform that allows citizens to report
+    garbage spots in their locality. Reports are verified by admins before
+    appearing on the public map.
+  </p>
+
+  <hr class="my-4">
+
+  <h4 class="text-center mb-3">About The Admins</h4>
+
+  <div class="row justify-content-center">
+
+    <div class="col-md-4 text-center">
+      <div class="card p-4 shadow card-hover">
+        <h5>Vabek Sroya</h5>
+        <a href="/admin/vabek" class="btn btn-success mt-3">
+          View Profile
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-4 text-center">
+      <div class="card p-4 shadow card-hover">
+        <h5>Lakshay Behal</h5>
+        <a href="/admin/lakshay" class="btn btn-success mt-3">
+          View Profile
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
 {% endblock %}

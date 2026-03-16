@@ -48,6 +48,13 @@ with app.app_context():
 @app.route("/")
 def home():
     return render_template("index.html")
+@app.route("/admin/vabek")
+def admin_vabek():
+    return render_template("admin_vabek.html")
+
+@app.route("/admin/lakshay")
+def admin_lakshay():
+    return render_template("admin_lakshay.html")
 
 
 # ✅ Report Form
@@ -99,6 +106,9 @@ def map_page():
 def spot_detail(spot_id):
     spot = Spot.query.get(spot_id)
     return render_template("spot_detail.html", spot=spot)
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 
 # ---------------- ADMIN LOGIN ---------------- #
