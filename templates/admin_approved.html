@@ -13,32 +13,62 @@
   <p>No approved spots yet ✅</p>
 {% else %}
 
-<table border="1" cellpadding="10">
+<table class="table table-bordered mt-3">
   <tr>
     <th>Place</th>
-    <th>Current Status</th>
-    <th>Update Status</th>
+    <th>Status</th>
+    <th>Update</th>
+    <th>Edit</th>
+    <th>Remove</th>
   </tr>
 
   {% for spot in spots %}
   <tr>
+
+    <!-- Place -->
     <td>{{ spot.place_name }}</td>
 
-    <td><b>{{ spot.status }}</b></td>
+    <!-- ✅ Status with Colors -->
+    <td>
+      {% if spot.status == "cleaned" %}
+        <span class="badge bg-success">Cleaned</span>
 
+      {% elif spot.status == "ongoing" %}
+        <span class="badge bg-warning text-dark">Ongoing</span>
+
+      {% else %}
+        <span class="badge bg-danger">Not Cleaned</span>
+      {% endif %}
+    </td>
+
+    <!-- Update -->
     <td>
       <form method="POST" action="/admin/update_status/{{ spot.id }}">
-
-        <select name="status">
-          <option value="cleaned">Cleaned ✅</option>
-          <option value="ongoing">Ongoing 🟠</option>
-          <option value="not_cleaned">Not Cleaned ❌</option>
+        <select name="status" class="form-select">
+          <option value="cleaned">Cleaned</option>
+          <option value="ongoing">Ongoing</option>
+          <option value="not_cleaned">Not Cleaned</option>
         </select>
-
-        <button type="submit">Update</button>
-
+        <button class="btn btn-success mt-2">Update</button>
       </form>
     </td>
+
+    <!-- Edit -->
+    <td>
+      <a href="/admin/edit/{{ spot.id }}" class="btn btn-warning">
+        Edit
+      </a>
+    </td>
+
+    <!-- Remove -->
+    <td>
+      <a href="/admin/delete/{{ spot.id }}"
+         class="btn btn-danger"
+         onclick="return confirm('Are you sure you want to remove this spot?')">
+         Remove
+      </a>
+    </td>
+
   </tr>
   {% endfor %}
 </table>

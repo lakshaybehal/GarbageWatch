@@ -2,8 +2,28 @@
 
 {% block content %}
 
-<h2>GarbageWatch Map (Approved Spots)</h2>
+<h2 class="text-center mb-3">GarbageWatch Map (Approved Spots)</h2>
 
+<!-- ✅ FILTER BUTTONS -->
+<div class="mb-3 text-center">
+
+  <button class="btn btn-dark active" onclick="filterSpots('all'); setActive(this)">All</button>
+
+  <button class="btn btn-success" onclick="filterSpots('cleaned'); setActive(this)">
+    Cleaned
+  </button>
+
+  <button class="btn btn-warning" onclick="filterSpots('ongoing'); setActive(this)">
+    Ongoing
+  </button>
+
+  <button class="btn btn-danger" onclick="filterSpots('not_cleaned'); setActive(this)">
+    Not Cleaned
+  </button>
+
+</div>
+
+<!-- ✅ MAP -->
 <div id="map" style="height: 500px;"></div>
 
 <!-- Leaflet CSS -->
@@ -16,6 +36,9 @@
 <script>
     // ✅ Create Map
     var map = L.map("map").setView([31.3260, 75.5762], 13);
+
+    // ✅ Move zoom buttons (optional nice UI)
+    map.zoomControl.setPosition('topright');
 
     // ✅ Load Tiles
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -38,26 +61,65 @@
         iconSize: [32, 32]
     });
 
-    // ✅ Add Approved Spots Directly (No JS Array Errors)
-    {% for spot in spots %}
+    // ✅ Store markers
+    var markers = [];
 
-        var iconUsed = redIcon;
+    function filterSpots(statusFilter) {
 
-        {% if spot.status == "cleaned" %}
-            iconUsed = greenIcon;
-        {% elif spot.status == "ongoing" %}
-            iconUsed = orangeIcon;
-        {% endif %}
+        // remove old markers
+        markers.forEach(marker => map.removeLayer(marker));
+        markers = [];
 
-        L.marker([{{ spot.latitude }}, {{ spot.longitude }}], {icon: iconUsed})
-            .addTo(map)
-            .bindPopup(
-                "<b>{{ spot.place_name }}</b><br>" +
-                "Status: {{ spot.status }}<br><br>" +
-                "<a href='/spot/{{ spot.id }}'>View Details</a>"
-            );
+        {% for spot in spots %}
 
-    {% endfor %}
+            var status = "{{ spot.status }}";
+
+            if (statusFilter === "all" || statusFilter === status) {
+
+                var iconUsed = redIcon;
+                var statusText = "<span style='color:red;'>Not Cleaned</span>";
+
+                if (status === "cleaned") {
+                    iconUsed = greenIcon;
+                    statusText = "<span style='color:green;'>Cleaned</span>";
+                }
+                else if (status === "ongoing") {
+                    iconUsed = orangeIcon;
+                    statusText = "<span style='color:orange;'>Ongoing</span>";
+                }
+
+                var marker = L.marker([{{ spot.latitude }}, {{ spot.longitude }}], {icon: iconUsed})
+                    .bindPopup(`
+                        <div style="width:200px">
+                            <h6>{{ spot.place_name }}</h6>
+                            <p><b>Status:</b> ${statusText}</p>
+                            <a href="/spot/{{ spot.id }}" class="btn btn-sm btn-primary">
+                                View Details
+                            </a>
+                        </div>
+                    `);
+
+                marker.addTo(map);
+                markers.push(marker);
+            }
+
+        {% endfor %}
+
+        // ✅ Optional: no result message
+        if (markers.length === 0) {
+            alert("No spots found for this filter");
+        }
+    }
+
+    // ✅ Active button UI
+    function setActive(button) {
+        document.querySelectorAll(".btn").forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+    }
+
+    // ✅ Default load
+    filterSpots("all");
+
 </script>
 
 {% endblock %}

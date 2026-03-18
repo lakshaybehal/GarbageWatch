@@ -2,37 +2,101 @@
 
 {% block content %}
 
-<h2>Report Garbage Spot</h2>
+<h2 class="text-center mb-4">Report Garbage Spot</h2>
 
-<form method="POST" enctype="multipart/form-data">
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
 
-  <label>Place Name:</label><br>
-  <input type="text" name="place_name" required><br><br>
+    <div class="card p-4 shadow-sm">
 
-  <label>Description:</label><br>
-  <textarea name="description" required></textarea><br><br>
+      <form method="POST" enctype="multipart/form-data">
 
-  <label>Latitude:</label><br>
-  <input type="number" step="any" name="latitude" required><br><br>
+        <!-- Place Name -->
+        <div class="mb-3">
+          <label class="form-label">Place Name</label>
+          <input type="text" name="place_name" class="form-control" required>
+        </div>
 
-  <label>Longitude:</label><br>
-  <input type="number" step="any" name="longitude" required><br><br>
+        <!-- Description -->
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea name="description" class="form-control" rows="3" required></textarea>
+        </div>
 
-  <label>Mobile Number:</label><br>
-  <input type="text" name="phone"
-         pattern="[0-9]{10}" maxlength="10"
-         required><br><br>
+        <!-- Latitude -->
+        <div class="mb-3">
+          <label class="form-label">Latitude</label>
+          <input type="number" step="any" name="latitude" class="form-control" required>
+        </div>
 
-  <label>Status:</label><br>
-  <input type="radio" name="status" value="cleaned" required> Cleaned ✅<br>
-  <input type="radio" name="status" value="ongoing"> Ongoing 🟠<br>
-  <input type="radio" name="status" value="not_cleaned"> Not Cleaned ❌<br><br>
+        <!-- Longitude -->
+        <div class="mb-3">
+          <label class="form-label">Longitude</label>
+          <input type="number" step="any" name="longitude" class="form-control" required>
+        </div>
 
-  <label>Upload Spot Image:</label><br>
-  <input type="file" name="image"><br><br>
+        <!-- Phone -->
+        <div class="mb-3">
+          <label class="form-label">Mobile Number</label>
+          <input type="text"
+                 name="phone"
+                 class="form-control"
+                 pattern="[0-9]{10}"
+                 maxlength="10"
+                 placeholder="Enter 10 digit number"
+                 required>
+        </div>
 
-  <button type="submit">Submit Report</button>
+        <!-- Email -->
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email"
+                 name="email"
+                 class="form-control"
+                 placeholder="example@gmail.com"
+                 required>
+        </div>
 
-</form>
+        <!-- Status -->
+        <div class="mb-3">
+          <label class="form-label">Status</label><br>
+
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="cleaned" required>
+            <label class="form-check-label">Cleaned ✅</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="ongoing">
+            <label class="form-check-label">Ongoing 🟠</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="not_cleaned">
+            <label class="form-check-label">Not Cleaned ❌</label>
+          </div>
+        </div>
+
+        <!-- Image -->
+        <div class="mb-3">
+          <label class="form-label">Upload Spot Image</label>
+          <input type="file" name="image" class="form-control">
+        </div>
+
+        <!-- Submit -->
+        <div class="d-grid">
+          <button type="submit"
+                  class="btn btn-primary"
+                  onclick="this.innerText='Submitting...'">
+            Submit Report
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
 
 {% endblock %}

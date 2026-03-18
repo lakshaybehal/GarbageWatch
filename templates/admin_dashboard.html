@@ -2,44 +2,92 @@
 
 {% block content %}
 
-<h2>Admin Dashboard (Pending Reports)</h2>
+<h2 class="text-center mb-3">Admin Dashboard (Pending Reports)</h2>
 
-<p>Admin: <b>{{ session["admin_user"] }}</b></p>
+<p class="text-center">
+  Admin: <b>{{ session["admin_user"] }}</b>
+</p>
 
-<a href="/admin/approved">✅ View Approved Spots</a> |
-<a href="/admin/logout">Logout</a>
+<div class="text-center mb-3">
+  <a href="/admin/approved" class="btn btn-primary btn-sm">
+    ✅ View Approved Spots
+  </a>
+
+  <a href="/admin/logout" class="btn btn-danger btn-sm">
+    Logout
+  </a>
+</div>
 
 <hr>
 
 {% if spots|length == 0 %}
-  <p>No pending reports ✅</p>
+  <p class="text-center">No pending reports ✅</p>
 {% else %}
 
-<table border="1" cellpadding="10">
-  <tr>
-    <th>Place</th>
-    <th>Status</th>
-    <th>Approve</th>
-    <th>Reject</th>
-  </tr>
+<div class="row">
+{% for spot in spots %}
 
-  {% for spot in spots %}
-  <tr>
-    <td>{{ spot.place_name }}</td>
-    <td>{{ spot.status }}</td>
+<div class="col-md-6 col-lg-4">
+  <div class="card p-3 mb-4 shadow-sm card-hover">
 
-    <td>
-      <a href="/admin/approve/{{ spot.id }}">Approve ✅</a>
-    </td>
+    <!-- Place -->
+    <h5 class="mb-2">{{ spot.place_name }}</h5>
 
-    <td>
-      <a href="/admin/reject/{{ spot.id }}" style="color:red;">
-        Reject ❌
+    <!-- Description -->
+    <p><b>Description:</b> {{ spot.description }}</p>
+
+    <!-- Location -->
+    <p>
+      <b>Location:</b><br>
+      Lat: {{ spot.latitude }}<br>
+      Lng: {{ spot.longitude }}
+    </p>
+
+    <!-- Phone -->
+    <p><b>Phone:</b> {{ spot.phone }}</p>
+
+    <!-- Status -->
+    <p><b>Status:</b>
+      {% if spot.status == "cleaned" %}
+        <span class="badge bg-success">Cleaned</span>
+
+      {% elif spot.status == "ongoing" %}
+        <span class="badge bg-warning text-dark">Ongoing</span>
+
+      {% else %}
+        <span class="badge bg-danger">Not Cleaned</span>
+      {% endif %}
+    </p>
+
+    <!-- Image -->
+    {% if spot.image %}
+      <img src="{{ url_for('static', filename='uploads/' + spot.image) }}"
+           class="img-fluid rounded mb-3"
+           style="max-height:200px; object-fit:cover;">
+    {% endif %}
+
+    <!-- Buttons -->
+    <div class="d-flex justify-content-between">
+
+      <a href="/admin/approve/{{ spot.id }}"
+         class="btn btn-success btn-sm"
+         onclick="return confirm('Approve this report?')">
+         Approve
       </a>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+
+      <a href="/admin/reject/{{ spot.id }}"
+         class="btn btn-danger btn-sm"
+         onclick="return confirm('Reject this report?')">
+         Reject
+      </a>
+
+    </div>
+
+  </div>
+</div>
+
+{% endfor %}
+</div>
 
 {% endif %}
 

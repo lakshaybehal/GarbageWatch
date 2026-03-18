@@ -15,39 +15,39 @@ app.config["UPLOAD_FOLDER"] = "static/uploads"
 
 db = SQLAlchemy(app)
 
-# ✅ Admin Users (Secure Hash)
+# ✅ Admin Users
 admin_users = {
     "vabek": generate_password_hash("244466666"),
     "lakshay": generate_password_hash("244466666")
 }
 
-
 # ✅ Spot Table
 class Spot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-
     place_name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(200), nullable=False)
-
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-
     phone = db.Column(db.String(15), nullable=False)
-
+    email = db.Column(db.String(120))
     status = db.Column(db.String(20), default="not_cleaned")
     image = db.Column(db.String(200), nullable=True)
-
     approved = db.Column(db.Boolean, default=False)
 
-
+# ✅ Create DB
 with app.app_context():
     db.create_all()
 
+# ---------------- ROUTES ---------------- #
 
-# ✅ Home
 @app.route("/")
 def home():
     return render_template("index.html")
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
 @app.route("/admin/vabek")
 def admin_vabek():
     return render_template("admin_vabek.html")
@@ -56,8 +56,8 @@ def admin_vabek():
 def admin_lakshay():
     return render_template("admin_lakshay.html")
 
+# ---------------- REPORT ---------------- #
 
-# ✅ Report Form
 @app.route("/report", methods=["GET", "POST"])
 def report():
     if request.method == "POST":
@@ -69,12 +69,36 @@ def report():
             filename = uploaded_file.filename
             uploaded_file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
+        email = request.form["email"]
+        phone = request.form["phone"]
+        latitude = float(request.form["latitude"])
+        longitude = float(request.form["longitude"])
+
+        # ✅ Phone validation
+        if not phone.isdigit() or len(phone) != 10:
+            return "⚠️ Invalid phone number! Must be 10 digits."
+
+        # ✅ Email validation
+        if "@" not in email or "." not in email:
+            return "⚠️ Invalid email format!"
+
+        # ✅ Duplicate check
+        existing_spot = Spot.query.filter_by(
+            latitude=latitude,
+            longitude=longitude
+        ).first()
+
+        if existing_spot:
+            return "⚠️ This location is already reported!"
+
+        # ✅ Create new spot
         new_spot = Spot(
             place_name=request.form["place_name"],
             description=request.form["description"],
-            latitude=float(request.form["latitude"]),
-            longitude=float(request.form["longitude"]),
-            phone=request.form["phone"],
+            latitude=latitude,
+            longitude=longitude,
+            phone=phone,
+            email=email,
             status=request.form["status"],
             image=filename,
             approved=False
@@ -87,35 +111,26 @@ def report():
 
     return render_template("report.html")
 
-
-# ✅ Popup Page
 @app.route("/success")
 def success():
     return render_template("success.html")
 
+# ---------------- MAP ---------------- #
 
-# ✅ Map Page (Approved Only)
 @app.route("/map")
 def map_page():
     approved_spots = Spot.query.filter_by(approved=True).all()
     return render_template("map.html", spots=approved_spots)
 
-
-# ✅ Spot Detail
 @app.route("/spot/<int:spot_id>")
 def spot_detail(spot_id):
     spot = Spot.query.get(spot_id)
     return render_template("spot_detail.html", spot=spot)
-@app.route("/about")
-def about():
-    return render_template("about.html")
 
-
-# ---------------- ADMIN LOGIN ---------------- #
+# ---------------- ADMIN ---------------- #
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
-
     error = None
 
     if request.method == "POST":
@@ -131,8 +146,7 @@ def admin_login():
 
     return render_template("admin_login.html", error=error)
 
-
-# ✅ Pending Dashboard
+# ✅ Dashboard
 @app.route("/admin/dashboard")
 def admin_dashboard():
 
@@ -142,10 +156,12 @@ def admin_dashboard():
     pending_spots = Spot.query.filter_by(approved=False).all()
     return render_template("admin_dashboard.html", spots=pending_spots)
 
-
-# ✅ Approve Spot
+# ✅ Approve
 @app.route("/admin/approve/<int:spot_id>")
 def approve_spot(spot_id):
+
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
 
     spot = Spot.query.get(spot_id)
 
@@ -155,10 +171,12 @@ def approve_spot(spot_id):
 
     return redirect("/admin/dashboard")
 
-
-# ✅ Reject Spot
+# ✅ Reject
 @app.route("/admin/reject/<int:spot_id>")
 def reject_spot(spot_id):
+
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
 
     spot = Spot.query.get(spot_id)
 
@@ -168,8 +186,7 @@ def reject_spot(spot_id):
 
     return redirect("/admin/dashboard")
 
-
-# ✅ NEW: Approved Spots List Page
+# ✅ Approved Page
 @app.route("/admin/approved")
 def approved_spots_page():
 
@@ -179,10 +196,27 @@ def approved_spots_page():
     approved_spots = Spot.query.filter_by(approved=True).all()
     return render_template("admin_approved.html", spots=approved_spots)
 
+# ✅ Delete
+@app.route("/admin/delete/<int:spot_id>")
+def delete_spot(spot_id):
 
-# ✅ NEW: Update Spot Status
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
+
+    spot = Spot.query.get(spot_id)
+
+    if spot:
+        db.session.delete(spot)
+        db.session.commit()
+
+    return redirect("/admin/approved")
+
+# ✅ Update Status
 @app.route("/admin/update_status/<int:spot_id>", methods=["POST"])
 def update_status(spot_id):
+
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
 
     spot = Spot.query.get(spot_id)
 
@@ -192,13 +226,13 @@ def update_status(spot_id):
 
     return redirect("/admin/approved")
 
-
 # ✅ Logout
 @app.route("/admin/logout")
 def admin_logout():
     session.clear()
     return redirect("/")
 
+# ---------------- RUN ---------------- #
 
 if __name__ == "__main__":
     app.run(debug=True)
