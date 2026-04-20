@@ -28,6 +28,7 @@ db = SQLAlchemy(app)
 # ✅ ADMIN USERS
 admin_users = {
     "vabek": generate_password_hash("244466666"),
+    "mcj": generate_password_hash("244466666"),
     "lakshay": generate_password_hash("244466666")
 }
 
