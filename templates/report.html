@@ -4,6 +4,7 @@
 
 <h2 class="text-center mb-4">Report Garbage Spot</h2>
 
+
 <div class="row justify-content-center">
   <div class="col-md-8 col-lg-6">
 
@@ -38,7 +39,7 @@
         <!-- Phone -->
         <div class="mb-3">
           <label class="form-label">Mobile Number</label>
-          <input type="text"
+          <input type="tel"
                  name="phone"
                  class="form-control"
                  pattern="[0-9]{10}"
@@ -59,21 +60,21 @@
 
         <!-- Status -->
         <div class="mb-3">
-          <label class="form-label">Status</label><br>
+          <label class="form-label">Status</label>
 
           <div class="form-check">
             <input class="form-check-input" type="radio" name="status" value="cleaned" required>
-            <label class="form-check-label">Cleaned ✅</label>
+            <label class="form-check-label text-success">Cleaned ✅</label>
           </div>
 
           <div class="form-check">
             <input class="form-check-input" type="radio" name="status" value="ongoing">
-            <label class="form-check-label">Ongoing 🟠</label>
+            <label class="form-check-label text-warning">Ongoing 🟠</label>
           </div>
 
           <div class="form-check">
             <input class="form-check-input" type="radio" name="status" value="not_cleaned">
-            <label class="form-check-label">Not Cleaned ❌</label>
+            <label class="form-check-label text-danger">Not Cleaned ❌</label>
           </div>
         </div>
 
@@ -86,8 +87,7 @@
         <!-- Submit -->
         <div class="d-grid">
           <button type="submit"
-                  class="btn btn-primary"
-                  onclick="this.innerText='Submitting...'">
+                  class="btn btn-success" >
             Submit Report
           </button>
         </div>
