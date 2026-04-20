@@ -226,6 +226,35 @@ def update_status(spot_id):
 
     return redirect("/admin/approved")
 
+@app.route("/admin/edit/<int:spot_id>", methods=["GET", "POST"])
+def edit_spot(spot_id):
+
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
+
+    spot = Spot.query.get(spot_id)
+
+    if request.method == "POST":
+
+        spot.place_name = request.form["place_name"]
+        spot.description = request.form["description"]
+        spot.latitude = float(request.form["latitude"])
+        spot.longitude = float(request.form["longitude"])
+        spot.status = request.form["status"]
+
+        # ✅ IMAGE UPDATE
+        image = request.files["image"]
+
+        if image and image.filename != "":
+            filename = image.filename
+            image.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            spot.image = filename   # update image
+
+        db.session.commit()
+
+        return redirect("/admin/approved")
+
+    return render_template("edit_spot.html", spot=spot)
 # ✅ Logout
 @app.route("/admin/logout")
 def admin_logout():

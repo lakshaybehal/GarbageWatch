@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="text-center mb-4">Edit Garbage Spot</h2>
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+
+    <div class="card p-4 shadow-sm">
+
+      <form method="POST" enctype="multipart/form-data">
+
+        <!-- Place Name -->
+        <div class="mb-3">
+          <label>Place Name</label>
+          <input type="text" name="place_name" class="form-control"
+                 value="{{ spot.place_name }}" required>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label>Description</label>
+          <textarea name="description" class="form-control" required>{{ spot.description }}</textarea>
+        </div>
+
+        <!-- Latitude -->
+        <div class="mb-3">
+          <label>Latitude</label>
+          <input type="number" step="any" name="latitude" class="form-control"
+                 value="{{ spot.latitude }}" required>
+        </div>
+
+        <!-- Longitude -->
+        <div class="mb-3">
+          <label>Longitude</label>
+          <input type="number" step="any" name="longitude" class="form-control"
+                 value="{{ spot.longitude }}" required>
+        </div>
+
+        <!-- Status -->
+        <div class="mb-3">
+          <label>Status</label>
+          <select name="status" class="form-control">
+            <option value="cleaned" {% if spot.status == "cleaned" %}selected{% endif %}>Cleaned</option>
+            <option value="ongoing" {% if spot.status == "ongoing" %}selected{% endif %}>Ongoing</option>
+            <option value="not_cleaned" {% if spot.status == "not_cleaned" %}selected{% endif %}>Not Cleaned</option>
+          </select>
+        </div>
+
+        <!-- Current Image -->
+        {% if spot.image %}
+        <div class="mb-3">
+          <label>Current Image</label><br>
+          <img src="{{ url_for('static', filename='uploads/' + spot.image) }}"
+               width="100" class="mb-2">
+        </div>
+        {% endif %}
+
+        <!-- New Image -->
+        <div class="mb-3">
+          <label>Change Image</label>
+          <input type="file" name="image" class="form-control">
+        </div>
+
+        <!-- Submit -->
+        <div class="d-grid">
+          <button class="btn btn-success">Update Spot</button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
